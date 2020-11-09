@@ -7,6 +7,7 @@
     "url": "https://mohamed-mourabit.com",
     "email": "mohamed.mourabit@outlook.com"
   },
+  "description": "demo eletron app auto-update",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/djm2x/electron-auto-update.git"
@@ -14,9 +15,8 @@
   "homepage": "https://github.com/djm2x/electron-auto-update#readme",
   "keywords": [
     "electron",
-    "express",
-    "typeorm",
-    "angular"
+    "electron-updater",
+    "electron-builder"
   ],
   "license": "Apache-2.0",
   "nodemonConfig": {
@@ -30,12 +30,13 @@
     "mode-developpement": "------------------------------------------------------------------",
     "f": "cd angular && ng serve",
     "e": "electron --require ts-node/register ./main.ts dev",
-    "b": "nodemon --exec electron --require ts-node/register ./main.ts s server dev",
+    "b0": "nodemon --exec electron --require ts-node/register ./main.ts dev",
+    "b": "electron --require ts-node/register ./main.ts dev",
     "mode-production": "---------------------------------------------------------------------",
     "f-p": "cd angular && ng build --prod --base-href ./ --output-path ../public",
     "b-p": "tsc --project ./tsconfig.json && node --require ts-node/register ./copy.folder.ts",
     "build": "node --require ts-node/register builderAPI.ts",
-    "prod": "npm run f-p && npm run b-p && npm run build",
+    "p": "npm run b-p && npm run build",
     "git": "---------------------------------------------------------------------",
     "create-branch": "git branch new-one",
     "move-to-branch": "git checkout new-one",
@@ -47,6 +48,7 @@
   },
   "private": true,
   "dependencies": {
+    "electron-reload": "^1.5.0",
     "electron-updater": "^4.3.5",
     "nodemon": "^2.0.6",
     "tslib": "^1.10.0"

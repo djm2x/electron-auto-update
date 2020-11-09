@@ -1,5 +1,5 @@
 import { app, BrowserWindow, BrowserWindowConstructorOptions, ipcMain, IpcMessageEvent, remote } from 'electron';
-import {autoUpdater} from 'electron-updater'
+import { autoUpdater } from 'electron-updater'
 
 // electron main
 // console.log(process.versions);
@@ -24,10 +24,19 @@ const options: BrowserWindowConstructorOptions = {
 }
 
 function createWindow() {
-  
+
   mainWindow = new BrowserWindow(options);
 
   // mainWindow.loadFile('index.html');
+
+  if (isDev) {
+    mainWindow.webContents.openDevTools();
+
+    // require('electron-reload')(__dirname, {
+    //   electron: require(`${__dirname}/node_modules/electron`)
+    // });
+  }
+
   mainWindow.loadURL(`file://${__dirname}/index.html`)
 
 
@@ -36,14 +45,33 @@ function createWindow() {
   });
 
 
-  mainWindow.webContents.openDevTools();
-  
+
+
   // mainWindow.webContents.once("did-finish-load", async () => { });
 
   mainWindow.once('ready-to-show', () => {
     autoUpdater.checkForUpdatesAndNotify()
   });
 }
+//>>>>>>>>>>>>
+ipcMain.on('app_version', (event) => {
+  event.sender.send('app_version', { version: app.getVersion() });
+});
+
+autoUpdater.on('update-available', () => {
+  mainWindow.webContents.send('update_available');
+});
+
+autoUpdater.on('update-downloaded', () => {
+  mainWindow.webContents.send('update_downloaded');
+});
+
+
+app.on('activate', () => {
+  if (mainWindow === null) {
+    createWindow();
+  }
+});
 
 ipcMain.on('app_version', (event) => {
   event.sender.send('app_version', { version: app.getVersion() });
@@ -57,6 +85,12 @@ autoUpdater.on('update-downloaded', () => {
   mainWindow.webContents.send('update_downloaded');
 });
 
+ipcMain.on('restart_app', () => {
+  autoUpdater.quitAndInstall();
+});
+
+
+//>>>>>>>>>>>>>>>>>
 function send(listningRoute: string, data: any) {
   ipcMain.on(listningRoute, (event, r) => {
     mainWindow.webContents.send('angular', data);
